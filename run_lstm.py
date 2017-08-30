@@ -211,18 +211,30 @@ class LSTM:
 def LoadText():
     with open("sample.txt", "r") as text_file:
         data = text_file.read()
+    #all chars
     text = list(data)
+
     outputSize = len(text)
+
+    #unique chars
     data = list(set(text))
     uniqueWords, dataSize = len(data), len(data) 
+
+    #form n x n 0 matrixs
     returnData = np.zeros((uniqueWords, dataSize))
+
+    #one hot?
     for i in range(0, dataSize):
         returnData[i][i] = 1
+
+    #append unique char array to one hot matrixs
     returnData = np.append(returnData, np.atleast_2d(data), axis=0)
+
     output = np.zeros((uniqueWords, outputSize))
     for i in range(0, outputSize):
         index = np.where(np.asarray(data) == text[i])
         output[:,i] = returnData[0:-1,index[0]].astype(float).ravel()  
+
     return returnData, uniqueWords, output, outputSize, data
 
 def ExportText(output, data):
@@ -243,6 +255,7 @@ def ExportText(output, data):
 print("Beginning")
 iterations = 5000
 learningRate = 0.001
+#unique words
 returnData, numCategories, expectedOutput, outputSize, data = LoadText()
 print("Done Reading")
 RNN = RecurrentNeuralNetwork(numCategories, numCategories, outputSize, expectedOutput, learningRate)
@@ -261,3 +274,5 @@ for i in range(1, iterations):
         ExportText(output, data)
         print("Done Writing")
 print("Complete")
+
+
